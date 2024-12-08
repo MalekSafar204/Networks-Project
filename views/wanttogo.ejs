@@ -1,42 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <style>
-        body {
-            background-image: url("background3.jpg");
-            background-repeat: no-repeat;
-            background-size: 100%;
-        }
+      body {
+        background-image: url("background3.jpg");
+        background-repeat: no-repeat;
+        background-size: 100%;
+      }
 
-        h1 {
-            color: white;
-            text-align: center;
-            -webkit-text-stroke: 1px blue;
-        }
+      h1 {
+        color: white;
+        text-align: center;
+        -webkit-text-stroke: 1px blue;
+      }
+      #places {
+        display: flex; /* Use flexbox for layout */
+        flex-wrap: wrap; /* Allow wrapping to the next row when necessary */
+        gap: 50px; /* Reduce the space between items */
+        justify-content: center; /* Center items horizontally */
+        padding: 20px; /* Keep the padding around the container */
+        position: fixed;
+        left: 50px;
+      }
+
+      .containers {
+        color: white;
+        text-align: center; /* Center align text and elements inside */
+        width: 180px; /* Set a fixed width for consistency */
+        flex: 1 1 calc(25% - 20px); /* Flexible size for responsiveness */
+        max-width: 200px;
+      }
+
+      .container img {
+        border-radius: 10px; /* Rounded corners for images */
+        width: 193px;
+        height: 300px;
+      }
+
+      .container label {
+        font-weight: bold; /* Make labels stand out */
+        display: block; /* Ensure labels are on their own line */
+        margin-top: 10px; /* Add spacing above labels */
+      }
+
+      .container button {
+        margin-top: 10px; /* Add spacing above the button */
+        /* Make button take full width of the container */
+      }
     </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Want-to-Go List</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
-        <a class="navbar-brand" style="color: rgb(191, 255, 161)">Want-to-Go List</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-            </ul>
-            <form method="POST" action='/search' class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" name="Search" type="search" placeholder="Search"
-                    aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
+      <a class="navbar-brand" style="color: rgb(191, 255, 161)"
+        >Want-to-Go List</a
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+        <form method="POST" action="/search" class="form-inline my-2 my-lg-0">
+          <input
+            class="form-control mr-sm-2"
+            name="Search"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+            Search
+          </button>
+        </form>
+      </div>
     </nav>
-</body>
+    <div id="places">
+      <% wantToGo.forEach((item, index) => { %>
+      <div class="containers">
+        <img
+          id="image<%= index%>"
+          src="/<%= item %>.png"
+          width="193"
+          height="300"
+        />
+        <br />
+        <label id="label<%= index%>" class="ml-4 my-2"><%= item %></label>
+        <br />
+        <button
+          onclick="location.href = '/<%= item %>';"
+          id="<%= item %>"
+          class="btn btn-secondary ml-3"
+        >
+          View
+        </button>
+      </div>
+      <% }); %>
+    </div>
+  </body>
 </html>
