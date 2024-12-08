@@ -58,7 +58,6 @@
       e.preventDefault();
       const username = document.getElementById("user").value.toLowerCase();
       const password = document.getElementById("password").value;
-      console.log(username, password);
       try {
         const response = await fetch("/registration", {
           method: "POST",

@@ -3,12 +3,22 @@ var path = require("path");
 var { MongoClient } = require("mongodb");
 var app = express();
 var session = require("express-session");
+const { log } = require("console");
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
+const destinations = [
+  "Inca Trail",
+  "Bali",
+  "Annapurna Circuit",
+  "Paris",
+  "Rome",
+  "Santorini",
+];
+var db;
 
 app.get("/", (req, res) => {
   res.render("login");
@@ -59,8 +69,13 @@ function isLoggedIn(req, res, next) {
   if (req.session && req.session.isLoggedIn) {
     next();
   } else {
-    if (req.headers["accept"] && req.headers["accept"].includes("application/json")) {
-      return res.status(401).json({ success: false, message: "User not authenticated" });
+    if (
+      req.headers["accept"] &&
+      req.headers["accept"].includes("application/json")
+    ) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authenticated" });
     } else {
       res.redirect("/");
     }
@@ -75,13 +90,33 @@ app.get("/index", isLoggedIn, (req, res) => {
   res.render("index");
 });
 
+app.post("/searchresults", isLoggedIn, async (req, res) => {
+  const { param } = req.body || "malek";
+  const results = [];
+  destinations.forEach((destination) => {
+    if (destination.toLowerCase().includes(param.toLowerCase())) {
+      results.push(destination.split(" ")[0].toLowerCase());
+    }
+  });
+  if (results.length === 0) {
+    return res.redirect(`/searchresults?message=No+Results+Found&results=[]`);
+  } else {
+    const resultsQuery = encodeURIComponent(JSON.stringify(results));
+    return res.redirect(`/searchresults?message=Results+Found+:&results=${resultsQuery}`);
+  }
+});
+
 app.get("/searchresults", isLoggedIn, (req, res) => {
-  res.render("searchresults");
+  const message = req.query.message || "No message";
+  const results = JSON.parse(req.query.results || "[]");
+  res.render("searchresults", { message, results });
 });
 
 app.get("/wanttogo", isLoggedIn, async (req, res) => {
   try {
-    const user = await db.collection("myCollection").findOne({ username: req.session.username });
+    const user = await db
+      .collection("myCollection")
+      .findOne({ username: req.session.username });
     const list = user.wantToGo;
     if (user) {
       res.render("wanttogo", { wantToGo: list });
@@ -90,7 +125,9 @@ app.get("/wanttogo", isLoggedIn, async (req, res) => {
     }
   } catch (error) {
     console.error("Error fetching wantToGo array:", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 });
 
@@ -121,12 +158,10 @@ app.post("/inca", isLoggedIn, async (req, res) => {
     .findOne({ username: username });
   var oldList = userFile.wantToGo;
   if (oldList.includes(name)) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Failed to add item to list as item already exists in list.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Failed to add item to list as item already exists in list.",
+    });
   } else {
     await db
       .collection("myCollection")
@@ -149,12 +184,10 @@ app.post("/bali", isLoggedIn, async (req, res) => {
     .findOne({ username: username });
   var oldList = userFile.wantToGo;
   if (oldList.includes(name)) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Failed to add item to list as item already exists in list.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Failed to add item to list as item already exists in list.",
+    });
   } else {
     await db
       .collection("myCollection")
@@ -177,12 +210,10 @@ app.post("/annapurna", isLoggedIn, async (req, res) => {
     .findOne({ username: username });
   var oldList = userFile.wantToGo;
   if (oldList.includes(name)) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Failed to add item to list as item already exists in list.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Failed to add item to list as item already exists in list.",
+    });
   } else {
     await db
       .collection("myCollection")
@@ -204,12 +235,10 @@ app.post("/paris", isLoggedIn, async (req, res) => {
     .findOne({ username: username });
   var oldList = userFile.wantToGo;
   if (oldList.includes(name)) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Failed to add item to list as item already exists in list.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Failed to add item to list as item already exists in list.",
+    });
   } else {
     await db
       .collection("myCollection")
@@ -231,12 +260,10 @@ app.post("/rome", isLoggedIn, async (req, res) => {
     .findOne({ username: username });
   var oldList = userFile.wantToGo;
   if (oldList.includes(name)) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Failed to add item to list as item already exists in list.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Failed to add item to list as item already exists in list.",
+    });
   } else {
     await db
       .collection("myCollection")
@@ -258,12 +285,10 @@ app.post("/santorini", isLoggedIn, async (req, res) => {
     .findOne({ username: username });
   var oldList = userFile.wantToGo;
   if (oldList.includes(name)) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Failed to add item to list as item already exists in list.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Failed to add item to list as item already exists in list.",
+    });
   } else {
     await db
       .collection("myCollection")
@@ -273,8 +298,6 @@ app.post("/santorini", isLoggedIn, async (req, res) => {
       .json({ success: true, message: "Destination added successfully." });
   }
 });
-
-var db;
 
 async function connection() {
   try {

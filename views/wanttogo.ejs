@@ -14,20 +14,20 @@
         -webkit-text-stroke: 1px blue;
       }
       #places {
-        display: flex; /* Use flexbox for layout */
-        flex-wrap: wrap; /* Allow wrapping to the next row when necessary */
-        gap: 50px; /* Reduce the space between items */
-        justify-content: center; /* Center items horizontally */
-        padding: 20px; /* Keep the padding around the container */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 50px;
+        justify-content: center;
+        padding: 20px;
         position: fixed;
         left: 50px;
       }
 
       .containers {
         color: white;
-        text-align: center; /* Center align text and elements inside */
-        width: 180px; /* Set a fixed width for consistency */
-        flex: 1 1 calc(25% - 20px); /* Flexible size for responsiveness */
+        text-align: center;
+        width: 180px;
+        flex: 0 1 auto;
         max-width: 200px;
       }
 
@@ -77,13 +77,19 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto"></ul>
-        <form method="POST" action="/search" class="form-inline my-2 my-lg-0">
+        <form
+          method="POST"
+          action="/searchresults"
+          onsubmit="Search1(event)"
+          class="form-inline my-2 my-lg-0"
+        >
           <input
             class="form-control mr-sm-2"
             name="Search"
             type="search"
             placeholder="Search"
             aria-label="Search"
+            id="searchText"
           />
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
             Search
@@ -114,4 +120,12 @@
       <% }); %>
     </div>
   </body>
+  <script>
+    function Search1(event) {
+      event.preventDefault();
+      var searchText = document.getElementById("searchText").value;
+      Search(event, searchText);
+    }
+  </script>
+  <script src="/script.js"></script>
 </html>
