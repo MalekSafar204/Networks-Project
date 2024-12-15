@@ -11,12 +11,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
 const destinations = [
-  "Inca Trail",
-  "Bali",
+  "Inca Trail to Machu Picchu",
+  "Bali Island",
   "Annapurna Circuit",
   "Paris",
   "Rome",
-  "Santorini",
+  "Santorini Island",
 ];
 var db;
 
